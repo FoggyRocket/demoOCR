@@ -53,6 +53,8 @@
 	<array>
 		<string>armv7</string>
 	</array>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Your message to user when the photo library is accessed for the first time</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

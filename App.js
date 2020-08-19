@@ -16,53 +16,72 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
 } from 'react-native';
-import {RNCamera} from 'react-native-camera';
-import {useCamera} from 'react-native-camera-hooks';
-import {utils} from '@react-native-firebase/app';
-  import vision from '@react-native-firebase/ml-vision';
+import {Container, Button} from 'native-base'
+import ReactNativeBiometrics from 'react-native-biometrics'
+
 
 const App: () => React$Node = ({initialProps}) => {
-  const [picture, setPicture] = useState({});
-  const [
-    {cameraRef, type, ratio, autoFocus, autoFocusPoint, isRecording},
-    {takePicture},
-  ] = useCamera(initialProps);
-  const options = {quality: 0.5, base64: false, pauseAfterCapture: false};
-  const onTakePicture = async () => {
-    try {
-      const data = await takePicture(options);
-      processesDocument(data.uri.replace('file://', ''));
-      console.warn(data);
-    } catch (error) {
-      console.error(error);
+  // const { biometryType } = await ReactNativeBiometrics.isSensorAvailable()
+  const onPressB = () =>{
+  //   ReactNativeBiometrics.isSensorAvailable()
+  // .then((resultObject) => {
+  //   const { available, biometryType } = resultObject
+
+  //   console.log('Result',resultObject)
+
+  //   if (available && biometryType === ReactNativeBiometrics.TouchID) {
+  //     console.log('TouchID is supported')
+  //   } else if (available && biometryType === ReactNativeBiometrics.FaceID) {
+  //     console.log('FaceID is supported')
+  //   } else if (available && biometryType === ReactNativeBiometrics.Biometrics) {
+  //     console.log('Biometrics is supported')
+  //   } else {
+  //     console.log('Biometrics not supported')
+  //   }
+  // })
+  // ReactNativeBiometrics.biometricKeysExist()
+  // .then((resultObject) => {
+  //   const { keysExist } = resultObject
+
+  //   if (keysExist) {
+  //     console.log('Keys exist')
+  //   } else {
+  //     console.log('Keys do not exist or were deleted')
+  //   }
+  // })
+  // ReactNativeBiometrics.createKeys('Confirm fingerprint')
+  // .then((resultObject) => {
+  //   const { publicKey } = resultObject
+  //   console.log(publicKey)
+  //  // sendPublicKeyToServer(publicKey)
+  // })
+  let epochTimeSeconds = Math.round((new Date()).getTime() / 1000).toString()
+  let payload = epochTimeSeconds + 'some message'
+
+ReactNativeBiometrics.createSignature({
+    promptMessage: 'Sign in',
+    payload: payload
+  })
+  .then((resultObject) => {
+    const { success, signature } = resultObject
+
+    if (success) {
+      console.log(signature)
+      verifySignatureWithServer(signature, payload)
     }
-  };
-
-  //Fireabse
-  const processesDocument = async (localPath) => {
-    const processed = await vision().cloudDocumentTextRecognizerProcessImage(
-      localPath,
-    );
-
-    console.log('Found text in document: ', processed.text);
-
-    processed.blocks.forEach((block) => {
-      console.log('Found block with text: ', block.text);
-      console.log('Confidence in block: ', block.confidence);
-      console.log('Languages found in block: ', block.recognizedLanguages);
-    });
-  };
+  })  
+  }
   return (
     <>
       <StatusBar barStyle="light-content" />
       <View style={styles.container}>
-        <RNCamera ref={cameraRef} style={styles.preview}>
-          <Text style={styles.capture} onPress={() => onTakePicture()}>
-            {' '}
-            [CAPTURE CARD]{' '}
-          </Text>
-        </RNCamera>
+          <Button onPress={onPressB}>
+            <Text>Press ME</Text>
+          </Button>
       </View>
+      <Container>
+
+      </Container>
     </>
   );
 };

@@ -15,6 +15,7 @@
     "native-base": "^2.13.13",
     "react": "16.13.1",
     "react-native": "0.63.2",
+    "react-native-biometrics": "^2.1.4",
     "react-native-camera": "^3.35.0",
     "react-native-camera-hooks": "^0.3.1"
   },
